@@ -100,7 +100,7 @@ When skills share the same name across levels, higher-priority locations win: **
 
 **`--add-dir` directories**: Skills from directories added via `--add-dir` are loaded automatically with live change detection. Any edits to skill files in those directories take effect immediately without restarting Claude Code.
 
-**Description budget**: Skill descriptions (Level 1 metadata) are capped at **2% of the context window** (fallback: **16,000 characters**). If you have many skills installed, some may be excluded. Run `/context` to check for warnings. Override the budget with the `SLASH_COMMAND_TOOL_CHAR_BUDGET` environment variable.
+**Description budget**: Skill descriptions (Level 1 metadata) are capped at **1% of the context window** (fallback: **8,000 characters**). If you have many skills installed, descriptions may be shortened. All skill names are always included, but descriptions are trimmed to fit. Front-load the key use case in descriptions. Override the budget with the `SLASH_COMMAND_TOOL_CHAR_BUDGET` environment variable.
 
 ## Creating Custom Skills
 
@@ -159,6 +159,7 @@ hooks:                                      # Skill-scoped hooks
       hooks:
         - type: command
           command: "./scripts/validate.sh"
+paths: "src/api/**/*.ts"               # Glob patterns limiting when skill activates
 ---
 ```
 
@@ -176,6 +177,7 @@ hooks:                                      # Skill-scoped hooks
 | `agent` | Subagent type when `context: fork` (e.g., `Explore`, `Plan`, `general-purpose`). |
 | `shell` | Shell used for `!`command`` substitutions and scripts: `bash` (default) or `powershell`. |
 | `hooks` | Hooks scoped to this skill's lifecycle (same format as global hooks). |
+| `paths` | Glob patterns that limit when the skill is auto-activated. Comma-separated string or YAML list. Same format as path-specific rules. |
 
 ## Skill Content Types
 
@@ -724,7 +726,7 @@ If Claude uses your skill when you don't want it:
 
 ### Claude Doesn't See All Skills
 
-Skill descriptions are loaded at **2% of the context window** (fallback: **16,000 characters**). Run `/context` to check for warnings about excluded skills. Override the budget with the `SLASH_COMMAND_TOOL_CHAR_BUDGET` environment variable.
+Skill descriptions are loaded at **1% of the context window** (fallback: **8,000 characters**). Each entry is capped at 250 characters regardless of budget. Run `/context` to check for warnings about excluded skills. Override the budget with the `SLASH_COMMAND_TOOL_CHAR_BUDGET` environment variable.
 
 ## Security Considerations
 
@@ -736,6 +738,19 @@ Skill descriptions are loaded at **2% of the context window** (fallback: **16,00
 - **External sources are risky**: Skills that fetch from external URLs can be compromised
 - **Tool misuse**: Malicious Skills can invoke tools in harmful ways
 - **Treat like installing software**: Only use Skills from trusted sources
+
+### Disabling shell substitution in skills
+
+Skills support the `` !`command` `` syntax to inject the output of shell commands into the prompt before Claude sees it. In security-sensitive environments (shared enterprise deployments, locked-down CI runners) you can disable this substitution entirely via the `disableSkillShellExecution` setting (added in **v2.1.91**):
+
+```jsonc
+// ~/.claude/settings.json or managed policy
+{
+  "disableSkillShellExecution": true
+}
+```
+
+When `disableSkillShellExecution` is `true`, any `` !`command` `` markers in a skill are left as literal text instead of being executed — removing the skill-level shell-injection attack surface without disabling skills themselves. Consider combining this with an `allowedTools` allowlist for defense in depth.
 
 ## Skills vs Other Features
 
@@ -802,3 +817,12 @@ Once you start building skills seriously, two things become essential: a library
 - [Memory Guide](../02-memory/) - Persistent context
 - [MCP (Model Context Protocol)](../05-mcp/) - Real-time external data
 - [Hooks Guide](../06-hooks/) - Event-driven automation
+
+---
+**Last Updated**: April 24, 2026
+**Claude Code Version**: 2.1.119
+**Sources**:
+- https://code.claude.com/docs/en/skills
+- https://code.claude.com/docs/en/settings
+- https://code.claude.com/docs/en/changelog
+**Compatible Models**: Claude Sonnet 4.6, Claude Opus 4.7, Claude Haiku 4.5

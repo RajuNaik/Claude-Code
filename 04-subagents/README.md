@@ -133,6 +133,44 @@ to solving problems.
 | `isolation` | No | Set to `worktree` to give the subagent its own git worktree |
 | `initialPrompt` | No | Auto-submitted first turn when the subagent runs as the main agent |
 
+### Main-Thread Agent Frontmatter Honoring (v2.1.117+/v2.1.119+)
+
+When an agent is invoked as the main-thread agent (via `claude --agent <name>` or `--print` mode), these frontmatter fields are honored:
+
+| Field | Version | Notes |
+|-------|---------|-------|
+| `mcpServers` | v2.1.117+ | Loaded when agent is invoked as main-thread agent via `claude --agent <name>` |
+| `permissionMode` | v2.1.119+ | Honored for built-in agents via `--agent <name>` |
+| `tools` / `disallowedTools` | v2.1.119+ | Honored in `--print` mode (non-interactive/scripted usage) |
+
+**Example — agent with `mcpServers` and `permissionMode`:**
+
+```yaml
+---
+name: secure-researcher
+description: Research agent with scoped MCP access and restricted permissions
+permissionMode: acceptEdits
+mcpServers:
+  notion:
+    type: http
+    url: https://mcp.notion.com/mcp
+  github:
+    type: http
+    url: https://api.github.com/mcp
+tools: Read, Grep, Glob
+---
+
+You are a research agent. You may query Notion and GitHub through the
+configured MCP servers, and read local files, but you cannot write or
+execute commands outside of accepted edits.
+```
+
+Run with:
+
+```bash
+claude --agent secure-researcher
+```
+
 ### Tool Configuration Options
 
 **Option 1: Inherit All Tools (omit the field)**
@@ -151,6 +189,8 @@ description: Agent with specific tools only
 tools: Read, Grep, Glob, Bash
 ---
 ```
+
+> **Note on Glob/Grep (v2.1.113+):** On native macOS/Linux builds, Glob and Grep are provided as `bfs`/`ugrep` through the Bash tool rather than as separate tools. Windows and npm-JS builds still expose them as standalone tools. Authors can still reference Glob/Grep in `allowedTools`; the backend substitution is transparent.
 
 **Option 3: Conditional Tool Access**
 ```yaml
@@ -529,6 +569,45 @@ graph TB
 
 ---
 
+## Forked Subagents
+
+Forked subagents (`context: fork`) inherit the parent agent's full conversation context at the moment of forking, rather than starting with a clean slate. This is useful for exploring alternative paths without losing the work done so far.
+
+> **Availability**: GA in v2.1.117. On external builds (non-first-party distributions), set `CLAUDE_CODE_FORK_SUBAGENT=1` to enable forking.
+
+### Configuration
+
+```yaml
+---
+name: alternative-explorer
+description: Explore an alternative implementation path while preserving parent context
+context: fork
+tools: Read, Edit, Bash, Grep, Glob
+---
+
+You are a forked subagent. You inherit the parent's full conversation and
+may explore an alternative approach. Return your findings and the parent
+will decide whether to adopt them.
+```
+
+### Enabling on External Builds
+
+```bash
+export CLAUDE_CODE_FORK_SUBAGENT=1
+claude
+```
+
+### When to Use Fork vs Clean Context
+
+| Scenario | `context: fork` | Clean context (default) |
+|----------|-----------------|-------------------------|
+| Explore alternative implementations | Yes | No (would lose context) |
+| Long research with existing context | Yes | No |
+| Independent specialized task | No | Yes |
+| Avoiding context pollution | No | Yes |
+
+---
+
 ## Restrict Spawnable Subagents
 
 You can control which subagents a given subagent is allowed to spawn by using the `Agent(agent_type)` syntax in the `tools` field. This provides a way to allowlist specific subagents for delegation.
@@ -569,20 +648,22 @@ This command:
 
 ## Agent Teams (Experimental)
 
-Agent Teams coordinate multiple Claude Code instances working together on complex tasks. Unlike subagents (which are delegated subtasks returning results), teammates work independently with their own context and communicate directly through a shared mailbox system.
+Agent Teams coordinate multiple Claude Code instances working together on complex tasks. Unlike subagents (which are delegated subtasks returning results), teammates work independently with their own context windows and can message each other directly through a shared mailbox system.
 
-> **Note**: Agent Teams is experimental and requires Claude Code v2.1.32+. Enable it before use.
+> **Official Documentation**: [code.claude.com/docs/en/agent-teams](https://code.claude.com/docs/en/agent-teams)
+
+> **Note**: Agent Teams is experimental and disabled by default. Requires Claude Code v2.1.32+. Enable it before use.
 
 ### Subagents vs Agent Teams
 
 | Aspect | Subagents | Agent Teams |
 |--------|-----------|-------------|
-| **Delegation model** | Parent delegates subtask, waits for result | Team lead assigns work, teammates execute independently |
-| **Context** | Fresh context per subtask, results distilled back | Each teammate maintains its own persistent context |
+| **Delegation model** | Parent delegates subtask, waits for result | Team lead coordinates work, teammates execute independently |
+| **Context** | Fresh context per subtask, results distilled back | Each teammate maintains its own persistent context window |
 | **Coordination** | Sequential or parallel, managed by parent | Shared task list with automatic dependency management |
-| **Communication** | Return values only | Inter-agent messaging via mailbox |
+| **Communication** | Results returned to parent only (no inter-agent messaging) | Teammates can message each other directly via mailbox |
 | **Session resumption** | Supported | Not supported with in-process teammates |
-| **Best for** | Focused, well-defined subtasks | Large multi-file projects requiring parallel work |
+| **Best for** | Focused, well-defined subtasks | Complex work requiring inter-agent communication and parallel execution |
 
 ### Enabling Agent Teams
 
@@ -620,7 +701,7 @@ Control how teammate activity is displayed:
 | Mode | Flag | Description |
 |------|------|-------------|
 | **Auto** | `--teammate-mode auto` | Automatically chooses the best display mode for your terminal |
-| **In-process** | `--teammate-mode in-process` | Shows teammate output inline in the current terminal (default) |
+| **In-process** (default) | `--teammate-mode in-process` | Shows teammate output inline in the current terminal |
 | **Split-panes** | `--teammate-mode tmux` | Opens each teammate in a separate tmux or iTerm2 pane |
 
 ```bash
@@ -1136,6 +1217,11 @@ graph TD
 
 ---
 
-*Last updated: March 2026*
-
-*This guide covers complete subagent configuration, delegation patterns, and best practices for Claude Code.*
+**Last Updated**: April 24, 2026
+**Claude Code Version**: 2.1.119
+**Sources**:
+- https://code.claude.com/docs/en/sub-agents
+- https://code.claude.com/docs/en/agent-teams
+- https://github.com/anthropics/claude-code/releases/tag/v2.1.117
+- https://github.com/anthropics/claude-code/releases/tag/v2.1.119
+**Compatible Models**: Claude Sonnet 4.6, Claude Opus 4.7, Claude Haiku 4.5

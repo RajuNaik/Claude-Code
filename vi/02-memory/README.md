@@ -49,10 +49,10 @@ Lệnh `/init` là cách nhanh nhất để thiết lập bộ nhớ dự án tr
 - Thiết lập nền tảng cho tính liên tục của bối cảnh qua các phiên
 - Cung cấp cấu trúc mẫu để ghiêu chuẩn dự án của bạn
 
-**Chế độ tương tác nâng cao:** Đặt `CLAUDE_CODE_NEW_INIT=true` để bật quy trình tương tác đa giai đoạn hướng dẫn bạn qua việc thiết lập dự án từng bước:
+**Chế độ tương tác nâng cao:** Đặt `CLAUDE_CODE_NEW_INIT=1` để bật quy trình tương tác đa giai đoạn hướng dẫn bạn qua việc thiết lập dự án từng bước:
 
 ```bash
-CLAUDE_CODE_NEW_INIT=true claude
+CLAUDE_CODE_NEW_INIT=1 claude
 /init
 ```
 
@@ -1151,3 +1151,9 @@ Claude sẽ nhắc bạn chọn file bộ nhớ nào để cập nhật.
 ### Các Tính Năng Claude Liên Quan
 - [Bộ Nhớ Claude Web](https://claude.ai) - Tổng hợp tự động
 - [Tài Liệu Bộ Nhớ Chính Thức](https://code.claude.com/docs/en/memory) - Tài liệu Anthropic
+
+---
+
+**Cập Nhật Lần Cuối**: Tháng 4 năm 2026
+**Phiên Bản Claude Code**: 2.1+
+**Các Mô Hình Tương Thích**: Claude Sonnet 4.6, Claude Opus 4.6, Claude Haiku 4.5

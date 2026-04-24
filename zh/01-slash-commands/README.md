@@ -46,7 +46,7 @@ Claude Code 目前提供 55+ 个内置命令和 5 个内置 Skills。你可以�
 | `/help` | 显示帮助 |
 | `/hooks` | 查看 hook 配置 |
 | `/ide` | 管理 IDE 集成 |
-| `/init` | 初始化 `CLAUDE.md`，可设置 `CLAUDE_CODE_NEW_INIT=true` 启用交互式流程 |
+| `/init` | 初始化 `CLAUDE.md`，可设置 `CLAUDE_CODE_NEW_INIT=1` 启用交互式流程 |
 | `/insights` | 生成会话分析报告 |
 | `/install-github-app` | 配置 GitHub Actions app |
 | `/install-slack-app` | 安装 Slack app |
@@ -81,7 +81,6 @@ Claude Code 目前提供 55+ 个内置命令和 5 个内置 Skills。你可以�
 | `/tasks` | 列出/管理后台任务 |
 | `/terminal-setup` | 配置终端快捷键 |
 | `/theme` | 更改颜色主题 |
-| `/vim` | 切换 Vim/Normal 模式 |
 | `/voice` | 切换按住说话语音输入 |
 
 ### 内置 Skills
@@ -103,6 +102,7 @@ Claude Code 目前提供 55+ 个内置命令和 5 个内置 Skills。你可以�
 | `/review` | 已弃用，已被 `code-review` 插件替代 |
 | `/output-style` | 自 v2.1.73 起弃用 |
 | `/fork` | 已重命名为 `/branch`（别名仍可用，v2.1.77） |
+| `/vim` | 自 v2.1.92 起移除；改用 `/config → Editor mode` |
 
 ### 最近变化
 
@@ -545,6 +545,11 @@ allowed-tools: Bash(npm *), Bash(git *)
 - [官方交互模式文档](https://code.claude.com/docs/en/interactive-mode) - 内置命令参考
 - [官方 Skills 文档](https://code.claude.com/docs/en/skills) - 完整 Skills 参考
 - [CLI Reference](https://code.claude.com/docs/en/cli-reference) - 命令行选项
+
+---
+
+**最后更新**: 2026 年 4 月 9 日
+**Claude Code 版本**: 2.1.97
 
 ---
 

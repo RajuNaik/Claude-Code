@@ -18,14 +18,14 @@ Slash commands are shortcuts that control Claude's behavior during an interactiv
 
 ## Built-in Commands Reference
 
-Built-in commands are shortcuts for common actions. There are **55+ built-in commands** and **5 bundled skills** available. Type `/` in Claude Code to see the full list, or type `/` followed by any letters to filter.
+Built-in commands are shortcuts for common actions. There are **60+ built-in commands** and **5 bundled skills** available. Type `/` in Claude Code to see the full list, or type `/` followed by any letters to filter.
 
 | Command | Purpose |
 |---------|---------|
 | `/add-dir <path>` | Add working directory |
 | `/agents` | Manage agent configurations |
 | `/branch [name]` | Branch conversation into a new session (alias: `/fork`). Note: `/fork` renamed to `/branch` in v2.1.77 |
-| `/btw <question>` | Side question without adding to history |
+| `/btw <question>` | Ask an ephemeral side question while Claude is working on the main task; doesn't pollute the main conversation context |
 | `/chrome` | Configure Chrome browser integration |
 | `/clear` | Clear conversation (aliases: `/reset`, `/new`) |
 | `/color [color\|default]` | Set prompt bar color |
@@ -33,24 +33,26 @@ Built-in commands are shortcuts for common actions. There are **55+ built-in com
 | `/config` | Open Settings (alias: `/settings`) |
 | `/context` | Visualize context usage as colored grid |
 | `/copy [N]` | Copy assistant response to clipboard; `w` writes to file |
-| `/cost` | Show token usage statistics |
+| `/cost` | Typing-shortcut alias for `/usage` — opens the cost tab (v2.1.118+) |
 | `/desktop` | Continue in Desktop app (alias: `/app`) |
 | `/diff` | Interactive diff viewer for uncommitted changes |
-| `/doctor` | Diagnose installation health |
-| `/effort [low\|medium\|high\|max\|auto]` | Set effort level. `max` requires Opus 4.6 |
+| `/doctor` | Diagnose installation health — openable while Claude is responding; shows status icons; press `f` to auto-fix issues (enhanced in v2.1.116) |
+| `/effort [low\|medium\|high\|xhigh\|max\|auto]` | Set effort level via interactive arrow-key slider. Levels: `low` → `medium` → `high` → `xhigh` (new in v2.1.111) → `max`. Default is `xhigh` on Opus 4.7; `max` requires Opus 4.7 |
 | `/exit` | Exit the REPL (alias: `/quit`) |
 | `/export [filename]` | Export the current conversation to a file or clipboard |
 | `/extra-usage` | Configure extra usage for rate limits |
 | `/fast [on\|off]` | Toggle fast mode |
 | `/feedback` | Submit feedback (alias: `/bug`) |
+| `/focus` | Toggle focus view (added v2.1.110; replaces `Ctrl+O` for focus toggle) |
 | `/help` | Show help |
 | `/hooks` | View hook configurations |
 | `/ide` | Manage IDE integrations |
-| `/init` | Initialize `CLAUDE.md`. Set `CLAUDE_CODE_NEW_INIT=true` for interactive flow |
+| `/init` | Initialize `CLAUDE.md`. Set `CLAUDE_CODE_NEW_INIT=1` for interactive flow |
 | `/insights` | Generate session analysis report |
 | `/install-github-app` | Set up GitHub Actions app |
 | `/install-slack-app` | Install Slack app |
 | `/keybindings` | Open keybindings configuration |
+| `/less-permission-prompts` | Analyze recent Bash/MCP tool calls and add a prioritized allowlist to `.claude/settings.json` to reduce permission prompts (added v2.1.111) |
 | `/login` | Switch Anthropic accounts |
 | `/logout` | Sign out from your Anthropic account |
 | `/mcp` | Manage MCP servers and OAuth |
@@ -61,9 +63,11 @@ Built-in commands are shortcuts for common actions. There are **55+ built-in com
 | `/permissions` | View/update permissions (alias: `/allowed-tools`) |
 | `/plan [description]` | Enter plan mode |
 | `/plugin` | Manage plugins |
-| `/pr-comments [PR]` | Fetch GitHub PR comments |
+| `/proactive` | Alias for `/loop` (added v2.1.105) |
+| `/powerup` | Discover features through interactive lessons with animated demos |
 | `/privacy-settings` | Privacy settings (Pro/Max only) |
 | `/release-notes` | View changelog |
+| `/recap` | Show session recap / summary when returning to a session (added v2.1.108) |
 | `/reload-plugins` | Reload active plugins |
 | `/remote-control` | Remote control from claude.ai (alias: `/rc`) |
 | `/remote-env` | Configure default remote environment |
@@ -72,16 +76,23 @@ Built-in commands are shortcuts for common actions. There are **55+ built-in com
 | `/review` | **Deprecated** — install the `code-review` plugin instead |
 | `/rewind` | Rewind conversation and/or code (alias: `/checkpoint`) |
 | `/sandbox` | Toggle sandbox mode |
-| `/schedule [description]` | Create/manage scheduled tasks |
+| `/schedule [description]` | Create/manage Cloud scheduled tasks |
 | `/security-review` | Analyze branch for security vulnerabilities |
 | `/skills` | List available skills |
-| `/stats` | Visualize daily usage, sessions, streaks |
+| `/stats` | Typing-shortcut alias for `/usage` — opens the stats tab (daily usage, sessions, streaks) (v2.1.118+) |
+| `/stickers` | Order Claude Code stickers |
 | `/status` | Show version, model, account |
 | `/statusline` | Configure status line |
 | `/tasks` | List/manage background tasks |
+| `/team-onboarding` | Generate a teammate ramp-up guide from the project's Claude Code setup (new in v2.1.101) |
 | `/terminal-setup` | Configure terminal keybindings |
-| `/theme` | Change color theme |
-| `/vim` | Toggle Vim/Normal modes |
+| `/theme` | Open theme picker / manage custom themes (v2.1.118). Define custom themes via JSON in `~/.claude/themes/<name>.json` |
+| `/tui` | Toggle fullscreen TUI (text user interface) mode with flicker-free rendering (added v2.1.110) |
+| `/ultraplan <prompt>` | Draft plan in ultraplan session, review in browser |
+| `/ultrareview` | Comprehensive cloud-based code review with multi-agent analysis (added v2.1.111) |
+| `/undo` | Alias for `/rewind` (added v2.1.108) |
+| `/upgrade` | Open upgrade page for higher plan tier |
+| `/usage` | Canonical usage dashboard (v2.1.118) — combines plan usage limits, rate limits, cost, and daily session stats. `/cost` and `/stats` are typing-shortcut aliases that open specific tabs |
 | `/voice` | Toggle push-to-talk voice dictation |
 
 ### Bundled Skills
@@ -103,19 +114,60 @@ These skills ship with Claude Code and are invoked like slash commands:
 | `/review` | Deprecated — replaced by `code-review` plugin |
 | `/output-style` | Deprecated since v2.1.73 |
 | `/fork` | Renamed to `/branch` (alias still works, v2.1.77) |
+| `/pr-comments` | Removed in v2.1.91 — ask Claude directly to view PR comments |
+| `/vim` | Removed in v2.1.92 — use /config → Editor mode |
 
 ### Recent Changes
 
 - `/fork` renamed to `/branch` with `/fork` kept as alias (v2.1.77)
 - `/output-style` deprecated (v2.1.73)
 - `/review` deprecated in favor of the `code-review` plugin
-- `/effort` command added with `max` level requiring Opus 4.6
+- `/effort` command added with `max` level requiring Opus 4.7 (originally Opus 4.6-only)
 - `/voice` command added for push-to-talk voice dictation
 - `/schedule` command added for creating/managing scheduled tasks
 - `/color` command added for prompt bar customization
+- /pr-comments removed in v2.1.91 — ask Claude directly to view PR comments
+- /vim removed in v2.1.92 — use /config → Editor mode instead
+- /ultraplan added for browser-based plan review and execution
+- /powerup added for interactive feature lessons
+- /sandbox added for toggling sandbox mode
 - `/model` picker now shows human-readable labels (e.g., "Sonnet 4.6") instead of raw model IDs
 - `/resume` supports `/continue` alias
 - MCP prompts are available as `/mcp__<server>__<prompt>` commands (see [MCP Prompts as Commands](#mcp-prompts-as-commands))
+- `/team-onboarding` added for auto-generating teammate ramp-up guides (v2.1.101)
+- `/tui` command added for flicker-free fullscreen TUI rendering (v2.1.110)
+- `/focus` command added for focus view toggle; `Ctrl+O` now only toggles verbose transcript (v2.1.110)
+- `/recap` command added to manually trigger session context recap (v2.1.108)
+- `/undo` added as alias for `/rewind` (v2.1.108)
+- `/proactive` added as alias for `/loop` (v2.1.105)
+- `/effort` gained interactive arrow-key slider and new `xhigh` level between `high` and `max`; default effort raised to `xhigh` for Opus 4.7 plans (v2.1.111)
+- `/ultrareview` added for comprehensive cloud-based multi-agent code review (v2.1.111)
+- `/less-permission-prompts` added to analyze Bash/MCP tool calls and reduce permission prompts via an allowlist in `.claude/settings.json` (v2.1.111)
+- Auto mode no longer requires the `--enable-auto-mode` flag for Max subscribers on Opus 4.7 (v2.1.112)
+
+### `/team-onboarding` — Teammate Ramp-Up Guide
+
+> **New in v2.1.101**
+
+Use `/team-onboarding` to generate a teammate ramp-up guide from your project's local Claude Code usage. The command inspects your `CLAUDE.md`, installed skills, subagents, hooks, and recent workflows, then produces an onboarding document that helps new developers become productive quickly.
+
+It's a built-in command — nothing to install.
+
+**Usage:**
+
+```bash
+claude /team-onboarding
+```
+
+The generated guide summarizes:
+
+- Project purpose and key conventions from [`CLAUDE.md`](../02-memory/README.md)
+- Available [skills](../03-skills/README.md) and when they are auto-invoked
+- Configured [subagents](../04-subagents/README.md) and their responsibilities
+- [Hooks](../06-hooks/README.md) that run on common events
+- Common workflows newcomers should know about
+
+**Availability:** Shipped in Claude Code v2.1.101 (April 11, 2026).
 
 ## Custom Commands (Now Skills)
 
@@ -548,5 +600,15 @@ If both exist with the same name, the **skill takes precedence**. Remove one or 
 - [CLI Reference](https://code.claude.com/docs/en/cli-reference) - Command-line options
 
 ---
+
+**Last Updated**: April 24, 2026
+**Claude Code Version**: 2.1.119
+**Sources**:
+- https://code.claude.com/docs/en/slash-commands
+- https://code.claude.com/docs/en/interactive-mode
+- https://code.claude.com/docs/en/changelog
+- https://github.com/anthropics/claude-code/releases/tag/v2.1.118
+- https://github.com/anthropics/claude-code/releases/tag/v2.1.116
+**Compatible Models**: Claude Sonnet 4.6, Claude Opus 4.7, Claude Haiku 4.5
 
 *Part of the [Claude How To](../) guide series*

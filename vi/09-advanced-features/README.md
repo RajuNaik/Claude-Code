@@ -1759,12 +1759,12 @@ export ENABLE_TOOL_SEARCH=true
 export CLAUDE_CODE_TASK_LIST_ID=my-project-tasks
 
 # Agent teams (experimental)
-export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=true
+export CLAUDE_CODE_EXPERIMENTAL_AGENT_TEAMS=1
 
 # Subagent and plugin configuration
 export CLAUDE_CODE_SUBAGENT_MODEL=sonnet
 export CLAUDE_CODE_PLUGIN_SEED_DIR=./my-plugins
-export CLAUDE_CODE_NEW_INIT=true
+export CLAUDE_CODE_NEW_INIT=1
 
 # Subprocess and streaming
 export CLAUDE_CODE_SUBPROCESS_ENV_SCRUB="SECRET_KEY,DB_PASSWORD"
@@ -1869,3 +1869,10 @@ For more information about Claude Code and related features:
 - [Official Remote Control Documentation](https://code.claude.com/docs/en/remote-control)
 - [Official Keybindings Documentation](https://code.claude.com/docs/en/keybindings)
 - [Official Desktop App Documentation](https://code.claude.com/docs/en/desktop)
+- [Official Agent Teams Documentation](https://code.claude.com/docs/en/agent-teams)
+
+---
+
+**Cập Nhật Lần Cuối**: Tháng 4 năm 2026
+**Phiên Bản Claude Code**: 2.1+
+**Các Mô Hình Tương Thích**: Claude Sonnet 4.6, Claude Opus 4.6, Claude Haiku 4.5

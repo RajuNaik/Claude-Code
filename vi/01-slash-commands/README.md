@@ -18,7 +18,7 @@ Lệnh slash là các lối tắt để điều khiển hành vi của Claude tr
 
 ## Tham Khảo Lệnh Tích Hợp Sẵn
 
-Lệnh tích hợp sẵn là các lối tắt cho các hành động phổ biến. Có **55+ lệnh tích hợp sẵn** và **5 skills được gói** sẵn. Gõ `/` trong Claude Code để xem danh sách đầy đủ, hoặc gõ `/` theo sau bởi bất kỳ chữ cái nào để lọc.
+Lệnh tích hợp sẵn là các lối tắt cho các hành động phổ biến. Có **60+ lệnh tích hợp sẵn** và **5 skills được gói** sẵn. Gõ `/` trong Claude Code để xem danh sách đầy đủ, hoặc gõ `/` theo sau bởi bất kỳ chữ cái nào để lọc.
 
 | Lệnh | Mục Đích |
 |---------|---------|
@@ -46,7 +46,7 @@ Lệnh tích hợp sẵn là các lối tắt cho các hành động phổ biế
 | `/help` | Hiển thị trợ giúp |
 | `/hooks` | Xem cấu hình hooks |
 | `/ide` | Quản lý tích hợp IDE |
-| `/init` | Khởi tạo `CLAUDE.md`. Đặt `CLAUDE_CODE_NEW_INIT=true` cho quy trình tương tác |
+| `/init` | Khởi tạo `CLAUDE.md`. Đặt `CLAUDE_CODE_NEW_INIT=1` cho quy trình tương tác |
 | `/insights` | Tạo báo cáo phân tích phiên |
 | `/install-github-app` | Thiết lập ứng dụng GitHub Actions |
 | `/install-slack-app` | Cài đặt ứng dụng Slack |
@@ -61,7 +61,7 @@ Lệnh tích hợp sẵn là các lối tắt cho các hành động phổ biế
 | `/permissions` | Xem/cập nhật quyền (bí danh: `/allowed-tools`) |
 | `/plan [description]` | Nhập chế độ lập kế hoạch |
 | `/plugin` | Quản lý plugins |
-| `/pr-comments [PR]` | Lấy bình luận GitHub PR |
+| `/powerup` | Khám phá tính năng thông qua các bài học tương tác với demo hoạt hình |
 | `/privacy-settings` | Cài đặt quyền riêng tư (chỉ Pro/Max) |
 | `/release-notes` | Xem changelog |
 | `/reload-plugins` | Tải lại các plugins hoạt động |
@@ -76,12 +76,14 @@ Lệnh tích hợp sẵn là các lối tắt cho các hành động phổ biế
 | `/security-review` | Phân tích nhánh để tìm lỗ hổng bảo mật |
 | `/skills` | Liệt kê các skills có sẵn |
 | `/stats` | Trực quan hóa việc sử dụng hàng ngày, các phiên, chuỗi ngày |
+| `/stickers` | Đặt sticker Claude Code |
 | `/status` | Hiển thị phiên bản, mô hình, tài khoản |
 | `/statusline` | Cấu hình dòng trạng thái |
 | `/tasks` | Liệt kê/quản lý các tác vụ nền |
 | `/terminal-setup` | Cấu hình terminal keybindings |
 | `/theme` | Thay đổi chủ đề màu |
-| `/vim` | Bật/tắt các chế độ Vim/Normal |
+| `/ultraplan <prompt>` | Soạn kế hoạch trong ultraplan session, xem trong trình duyệt |
+| `/upgrade` | Mở trang nâng cấp cho tier cao hơn |
 | `/voice` | Bật/tắt nhập liệu giọng nói push-to-talk |
 
 ### Skills Được Gói Sẵn
@@ -103,16 +105,23 @@ Những skills này được gửi kèm với Claude Code và được gọi nh�
 | `/review` | Đã lỗi thời — được thay thế bởi plugin `code-review` |
 | `/output-style` | Đã lỗi thời kể từ v2.1.73 |
 | `/fork` | Đổi tên thành `/branch` (bí danh vẫn hoạt động, v2.1.77) |
+| `/pr-comments` | Đã xóa trong v2.1.91 — hỏi Claude trực tiếp để xem bình luận PR |
+| `/vim` | Đã xóa trong v2.1.92 — sử dụng /config → Editor mode |
 
 ### Thay Đổi Gần Đây
 
-- `/fork` đổi tên thành `/branch` với `/fork` được giữ lại sebagai bí danh (v2.1.77)
+- `/fork` đổi tên thành `/branch` với `/fork` được giữ lại làm bí danh (v2.1.77)
 - `/output-style` đã lỗi thời (v2.1.73)
 - `/review` đã lỗi thời thay vào đó là plugin `code-review`
 - Lệnh `/effort` được thêm với mức `max` yêu cầu Opus 4.6
 - Lệnh `/voice` được thêm cho nhập liệu giọng nói push-to-talk
 - Lệnh `/schedule` được thêm để tạo/quản lý các tác vụ định kỳ
 - Lệnh `/color` được thêm để tùy chỉnh thanh prompt
+- `/pr-comments` đã xóa trong v2.1.91 — hỏi Claude trực tiếp để xem bình luận PR
+- `/vim` đã xóa trong v2.1.92 — sử dụng /config → Editor mode thay thế
+- `/ultraplan` được thêm để xem và thực thi kế hoạch trong trình duyệt
+- `/powerup` được thêm để học tính năng tương tác
+- `/sandbox` được thêm để bật/tắt chế độ sandbox
 - Bộ chọn `/model` hiện hiển thị nhãn dễ đọc cho con người (ví dụ: "Sonnet 4.6") thay vì ID mô hình thô
 - `/resume` hỗ trợ bí danh `/continue`
 - MCP prompts có sẵn dưới dạng các lệnh `/mcp__<server>__<prompt>` (xem [MCP Prompts dưới dạng Lệnh](#mcp-prompts-dưới-dạng-lệnh))
@@ -152,7 +161,7 @@ Skills cung cấp các tính năng bổ sung so với lệnh legacy:
 - **Thực thi tác nhân con**: Chạy skills trong các bối cảnh cô lập với `context: fork`
 - **Tiết lộ từng bước**: Tải các files bổ sung chỉ khi cần thiết
 
-### Tạo Một Lệnh Tùy Chỉ dưới dạng Skill
+### Tạo Một Lệnh Tùy Chỉnh dưới dạng Skill
 
 Tạo một thư mục với file `SKILL.md`:
 
@@ -548,5 +557,9 @@ Nếu cả hai tồn tại với cùng tên, **skill sẽ được ưu tiên**. 
 - [Tham Khảo CLI](https://code.claude.com/docs/en/cli-reference) - Tùy chọn dòng lệnh
 
 ---
+
+**Cập Nhật Lần Cuối**: Tháng 4 năm 2026
+**Phiên Bản Claude Code**: 2.1+
+**Các Mô Hình Tương Thích**: Claude Sonnet 4.6, Claude Opus 4.6, Claude Haiku 4.5
 
 *Phần của series hướng dẫn [Claude How To](../)*

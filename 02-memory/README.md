@@ -25,9 +25,7 @@ The memory system operates at multiple levels, from global personal preferences 
 |---------|---------|-------|-------------|
 | `/init` | Initialize project memory | `/init` | Starting new project, first-time CLAUDE.md setup |
 | `/memory` | Edit memory files in editor | `/memory` | Extensive updates, reorganization, reviewing content |
-| `#` prefix | Quick single-line memory add | `# Your rule here` | Adding quick rules during conversation |
-| `# new rule into memory` | Explicit memory addition | `# new rule into memory<br/>Your detailed rule` | Adding complex multi-line rules |
-| `# remember this` | Natural language memory | `# remember this<br/>Your instruction` | Conversational memory updates |
+| `#` prefix | ~~Quick single-line memory add~~ **Discontinued** | — | Use `/memory` or ask conversationally instead |
 | `@path/to/file` | Import external content | `@README.md` or `@docs/api.md` | Referencing existing documentation in CLAUDE.md |
 
 ## Quick Start: Initializing Memory
@@ -49,10 +47,10 @@ The `/init` command is the fastest way to set up project memory in Claude Code. 
 - Sets up the foundation for context persistence across sessions
 - Provides a template structure for documenting your project standards
 
-**Enhanced interactive mode:** Set `CLAUDE_CODE_NEW_INIT=true` to enable a multi-phase interactive flow that walks you through project setup step by step:
+**Enhanced interactive mode:** Set `CLAUDE_CODE_NEW_INIT=1` to enable a multi-phase interactive flow that walks you through project setup step by step:
 
 ```bash
-CLAUDE_CODE_NEW_INIT=true claude
+CLAUDE_CODE_NEW_INIT=1 claude
 /init
 ```
 
@@ -82,48 +80,38 @@ CLAUDE_CODE_NEW_INIT=true claude
 - Git workflow conventions
 ```
 
-### Quick Memory Updates with `#`
+### Quick Memory Updates
 
-You can quickly add information to memory during any conversation by starting your message with `#`:
+> **Note**: The `#` shortcut for inline memory was discontinued. Use `/memory` to edit memory files directly, or ask Claude conversationally to remember something (e.g., "remember that we always use TypeScript strict mode").
 
-**Syntax:**
+The recommended ways to add information to memory are:
 
-```markdown
-# Your memory rule or instruction here
+**Option 1: Use `/memory` command**
+
+```bash
+/memory
 ```
 
-**Examples:**
+Opens your memory files in your system editor for direct editing.
 
-```markdown
-# Always use TypeScript strict mode in this project
+**Option 2: Ask conversationally**
 
-# Prefer async/await over promise chains
-
-# Run npm test before every commit
-
-# Use kebab-case for file names
+```
+Remember that we always use TypeScript strict mode in this project.
+Please add to memory: prefer async/await over promise chains.
 ```
 
-**How it works:**
+Claude will update the appropriate CLAUDE.md file based on your request.
 
-1. Start your message with `#` followed by your rule
-2. Claude recognizes this as a memory update request
-3. Claude asks which memory file to update (project or personal)
-4. The rule is added to the appropriate CLAUDE.md file
-5. Future sessions automatically load this context
+**Historical reference** (no longer functional):
 
-**Alternative patterns:**
+The `#` prefix shortcut previously allowed adding rules inline:
 
 ```markdown
-# new rule into memory
-Always validate user input with Zod schemas
-
-# remember this
-Use semantic versioning for all releases
-
-# add to memory
-Database migrations must be reversible
+# Always use TypeScript strict mode in this project  ← no longer works
 ```
+
+If you relied on this pattern, switch to the `/memory` command or conversational requests.
 
 ### The `/memory` Command
 
@@ -248,7 +236,7 @@ Claude Code uses a multi-tier hierarchical memory system. Memory files are autom
 7. **Local Project Memory** - Personal project-specific preferences
    - `./CLAUDE.local.md`
 
-> **Note**: `CLAUDE.local.md` is not mentioned in the [official documentation](https://code.claude.com/docs/en/memory) as of March 2026. It may still work as a legacy feature. For new projects, consider using `~/.claude/CLAUDE.md` (user-level) or `.claude/rules/` (project-level, path-scoped) instead.
+> **Note**: `CLAUDE.local.md` is fully supported and documented in the [official documentation](https://code.claude.com/docs/en/memory). It provides personal project-specific preferences that are not committed to version control. Add `CLAUDE.local.md` to your `.gitignore`.
 
 8. **Auto Memory** - Claude's automatic notes and learnings
    - `~/.claude/projects/<project>/memory/`
@@ -321,6 +309,53 @@ Settings can also be configured via:
 - **Windows**: Windows Registry
 
 These platform-native mechanisms are read alongside JSON settings files and follow the same precedence rules.
+
+> **Note (v2.1.119)**: `/config` changes now persist to `~/.claude/settings.json`. Values written via `/config` participate in the normal project/local/policy precedence chain described above — they are no longer session-only. Use `/config` for interactive edits and edit `settings.json` files directly for scripted or managed configuration.
+
+### Retention and Cleanup Settings
+
+| Setting | Type | Default | Description |
+|---------|------|---------|-------------|
+| `cleanupPeriodDays` | integer (days) | 30 | Retention window for on-disk artifacts. **As of v2.1.117**, it applies to all four of: checkpoints (`~/.claude/checkpoints/`), tasks (`~/.claude/tasks/`), shell-snapshots (`~/.claude/shell-snapshots/`), and backups (`~/.claude/backups/`). Files older than the window are pruned at startup. |
+
+```jsonc
+// ~/.claude/settings.json
+{
+  "cleanupPeriodDays": 14
+}
+```
+
+### Attribution, Voice, and PR URL Settings
+
+| Setting | Type | Description |
+|---------|------|-------------|
+| `attribution.commit` | boolean | Adds the `Co-Authored-By: Claude` trailer to commits Claude creates. Replaces the deprecated `includeCoAuthoredBy` flag. |
+| `attribution.pr` | boolean | Adds Claude attribution to pull request descriptions. Replaces the deprecated `includeCoAuthoredBy` flag for PRs. |
+| `voice.enabled` | boolean | Enables push-to-talk voice dictation (`/voice`). Replaces the deprecated `voiceEnabled` flag. |
+| `prUrlTemplate` | string | **New in v2.1.119.** Custom URL template for the footer PR badge; useful for GitLab, Bitbucket, or internal code-review platforms. Supports `{{owner}}`, `{{repo}}`, and `{{number}}` placeholders. |
+
+```jsonc
+// ~/.claude/settings.json
+{
+  "attribution": {
+    "commit": false,
+    "pr": true
+  },
+  "voice": {
+    "enabled": true
+  },
+  "prUrlTemplate": "https://gitlab.internal/{{owner}}/{{repo}}/-/merge_requests/{{number}}"
+}
+```
+
+#### Deprecated setting names
+
+The following legacy setting keys still work but are deprecated. Prefer the replacements above.
+
+| Deprecated key | Replacement | Notes |
+|----------------|-------------|-------|
+| `includeCoAuthoredBy` | `attribution.commit` / `attribution.pr` | The old single flag is split into separate commit and PR switches. Users on older installs can keep the legacy key; new projects should use the nested form. |
+| `voiceEnabled` | `voice.enabled` | Grouped under the `voice` namespace alongside future voice-related options. |
 
 ## Modular Rules System
 
@@ -423,14 +458,14 @@ Auto memory is a persistent directory where Claude automatically records learnin
 - **Location**: `~/.claude/projects/<project>/memory/`
 - **Entrypoint**: `MEMORY.md` serves as the main file in the auto memory directory
 - **Topic files**: Optional additional files for specific subjects (e.g., `debugging.md`, `api-conventions.md`)
-- **Loading behavior**: The first 200 lines of `MEMORY.md` are loaded into the system prompt at session start. Topic files are loaded on demand, not at startup.
+- **Loading behavior**: The first 200 lines of `MEMORY.md` (or first 25KB, whichever comes first) are loaded into context at session start. Topic files are loaded on demand, not at startup.
 - **Read/write**: Claude reads and writes memory files during sessions as it discovers patterns and project-specific knowledge
 
 ### Auto Memory Architecture
 
 ```mermaid
 graph TD
-    A["Claude Session Starts"] --> B["Load MEMORY.md<br/>(first 200 lines)"]
+    A["Claude Session Starts"] --> B["Load MEMORY.md<br/>(first 200 lines / 25KB)"]
     B --> C["Session Active"]
     C --> D["Claude discovers<br/>patterns & insights"]
     D --> E{"Write to<br/>auto memory"}
@@ -455,7 +490,7 @@ graph TD
 
 ```
 ~/.claude/projects/<project>/memory/
-├── MEMORY.md              # Entrypoint (first 200 lines loaded at startup)
+├── MEMORY.md              # Entrypoint (first 200 lines / 25KB loaded at startup)
 ├── debugging.md           # Topic file (loaded on demand)
 ├── api-conventions.md     # Topic file (loaded on demand)
 └── testing-patterns.md    # Topic file (loaded on demand)
@@ -503,6 +538,8 @@ memory: local     # Load local memory only
 ```
 
 This allows subagents to operate with focused context rather than inheriting the full memory hierarchy.
+
+> **Note**: Subagents can also maintain their own auto memory. See the [official subagent memory documentation](https://code.claude.com/docs/en/sub-agents#enable-persistent-memory) for details.
 
 ### Controlling Auto Memory
 
@@ -844,7 +881,7 @@ Added to ./CLAUDE.md:
 
 | Feature | Claude Web/Desktop | Claude Code (CLAUDE.md) |
 |---------|-------------------|------------------------|
-| Auto-synthesis | ✅ Every 24h | ❌ Manual |
+| Auto-synthesis | ✅ Every 24h | ✅ Auto memory |
 | Cross-project | ✅ Shared | ❌ Project-specific |
 | Team access | ✅ Shared projects | ✅ Git-tracked |
 | Searchable | ✅ Built-in | ✅ Through `/memory` |
@@ -1159,3 +1196,13 @@ For the most up-to-date information, refer to the official Claude Code documenta
 ### Related Claude Features
 - [Claude Web Memory](https://claude.ai) - Automatic synthesis
 - [Official Memory Docs](https://code.claude.com/docs/en/memory) - Anthropic documentation
+
+---
+**Last Updated**: April 24, 2026
+**Claude Code Version**: 2.1.119
+**Sources**:
+- https://code.claude.com/docs/en/memory
+- https://code.claude.com/docs/en/settings
+- https://github.com/anthropics/claude-code/releases/tag/v2.1.117
+- https://github.com/anthropics/claude-code/releases/tag/v2.1.119
+**Compatible Models**: Claude Sonnet 4.6, Claude Opus 4.7, Claude Haiku 4.5

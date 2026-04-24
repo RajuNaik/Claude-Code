@@ -1,5 +1,50 @@
 # Changelog
 
+## v2.3.0 — 2026-04-07
+
+### Tính Năng / Features
+
+- Xây dựng và xuất bản các tạo tác EPUB cho mỗi ngôn ngữ (90e9c30) @Thiên Toán
+- Thêm hook pre-tool-check.sh bị thiếu vào 06-hooks (b511ed1) @JiayuWang
+- Thêm bản dịch tiếng Trung vào thư mục zh/ (89e89d4) @Luong NGUYEN
+- Thêm subagent tối ưu hóa hiệu suất và hook kiểm tra phụ thuộc (f53d080) @qk
+
+### Sửa Lỗi / Bug Fixes
+
+- Khả năng tương thích Windows Git Bash + giao thức stdin JSON (2cbb10c) @Luong NGUYEN
+- Sửa tài liệu cấu hình autoCheckpoint trong 08-checkpoints (749c79f) @JiayuWang
+- Nhúng hình ảnh SVG thay vì thay thế bằng placeholder (1b16709) @Thiên Toán
+- Sửa hiển thị hàng rào code lồng nhau trong README bộ nhớ (ce24423) @Zhaoshan Duan
+- Áp dụng các sửa chữa từ đánh giá bị loại bỏ bởi squash merge (34259ca) @Luong NGUYEN
+- Làm cho các tập lệnh hook tương thích với Windows Git Bash và sử dụng giao thức stdin JSON (107153d) @binyu li
+
+### Tài Liệu / Documentation
+
+- Đồng bộ tất cả các hướng dẫn với các tài liệu Claude Code mới nhất (Tháng 4 2026) (72d3b01) @Luong NGUYEN
+- Thêm liên kết ngôn ngữ tiếng Trung vào bộ chuyển đổi ngôn ngữ (6cbaa4d) @Luong NGUYEN
+- Thêm bộ chuyển đổi ngôn ngữ giữa tiếng Anh và tiếng Việt (100c45e) @Luong NGUYEN
+- Thêm huy hiệu GitHub #1 Trending (0ca8c37) @Luong NGUYEN
+- Giới thiệu cc-context-stats để giám sát vùng ngữ cảnh (d41b335) @Luong NGUYEN
+- Giới thiệu bộ sưu tập luongnv89/skills và trình quản lý kỹ năng luongnv89/asm (7e3c0b6) @Luong NGUYEN
+- Cập nhật thống kê README để phản ánh các số liệu GitHub hiện tại (5,900+ stars, 690+ forks) (5001525) @Luong NGUYEN
+- Cập nhật thống kê README để phản ánh các số liệu GitHub hiện tại (3,900+ stars, 460+ forks) (9cb92d6) @Luong NGUYEN
+
+### Tái cấu trúc / Refactoring
+
+- Thay thế phụ thuộc Kroki HTTP bằng hiển thị mmdc cục bộ (e76bbe4) @Luong NGUYEN
+- Chuyển các kiểm tra chất lượng sang pre-commit, CI làm đường chuyền thứ hai (6d1e0ae) @Luong NGUYEN
+- Thu hẹp đường cơ sở quyền tự động (2790fb2) @Luong NGUYEN
+- Thay thế hook tự động thích ứng bằng tập lệnh thiết lập quyền một lần (995a5d6) @Luong NGUYEN
+
+### Khác / Other
+
+- Chuyển các cổng chất lượng sang trái — thêm mypy vào pre-commit, sửa các lỗi CI (699fb39) @Luong NGUYEN
+- Thêm bản địa hóa tiếng Việt (Tiếng Việt) (a70777e) @Thiên Toán
+
+**Full Changelog**: https://github.com/luongnv89/claude-howto/compare/v2.2.0...v2.3.0
+
+---
+
 ## v2.2.0 — 2026-03-26
 
 ### Tài Liệu / Documentation

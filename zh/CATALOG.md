@@ -63,7 +63,6 @@
 | `/login` | 通过 Anthropic 认证 | 访问功能 |
 | `/logout` | 登出 | 切换账号 |
 | `/sandbox` | 切换 sandbox 模式 | 安全执行命令 |
-| `/vim` | 切换 vim 模式 | 类 Vim 编辑 |
 | `/doctor` | 运行诊断 | 排查问题 |
 | `/reload-plugins` | 重新加载已安装的 plugins | 插件管理 |
 | `/release-notes` | 显示更新说明 | 查看新功能 |
@@ -515,3 +514,8 @@ claude mcp add github -- npx -y @modelcontextprotocol/server-github
 - [Skills Repository](https://github.com/luongnv89/skills) - 现成 skills 集合
 - [Anthropic Cookbook](https://github.com/anthropics/anthropic-cookbook)
 - [Boris Cherny's Claude Code Workflow](https://x.com/bcherny/status/2007179832300581177) - Claude Code 的创造者分享了他的系统化工作流：并行 agents、共享 `CLAUDE.md`、Plan mode、slash commands、subagents，以及用于长时间自主会话的验证 hooks。
+
+---
+
+**最后更新**: 2026 年 4 月 9 日
+**Claude Code 版本**: 2.1.97

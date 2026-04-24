@@ -1,5 +1,50 @@
 # 更新日志
 
+## v2.3.0 — 2026-04-07
+
+### 功能
+
+- 构建和发布每种语言的 EPUB 制品（90e9c30）@Thiên Toán
+- 将缺失的 pre-tool-check.sh hook 添加到 06-hooks（b511ed1）@JiayuWang
+- 在 zh/ 目录中添加中文翻译（89e89d4）@Luong NGUYEN
+- 添加性能优化器子代理和依赖检查 hook（f53d080）@qk
+
+### Bug 修复
+
+- Windows Git Bash 兼容性 + stdin JSON 协议（2cbb10c）@Luong NGUYEN
+- 修正 08-checkpoints 中的 autoCheckpoint 配置文档（749c79f）@JiayuWang
+- 用占位符替代 SVG 图像嵌入（1b16709）@Thiên Toán
+- 修复内存 README 中的嵌套代码围栏渲染（ce24423）@Zhaoshan Duan
+- 应用由 squash merge 丢弃的审查修复（34259ca）@Luong NGUYEN
+- 使 hook 脚本与 Windows Git Bash 兼容并使用 stdin JSON 协议（107153d）@binyu li
+
+### 文档
+
+- 与 Claude Code 最新文档（2026 年 4 月）同步所有教程（72d3b01）@Luong NGUYEN
+- 在语言切换器中添加中文语言链接（6cbaa4d）@Luong NGUYEN
+- 在英文和越南文之间添加语言切换器（100c45e）@Luong NGUYEN
+- 添加 GitHub #1 Trending 徽章（0ca8c37）@Luong NGUYEN
+- 为上下文区域监控引入 cc-context-stats（d41b335）@Luong NGUYEN
+- 引入 luongnv89/skills 集合和 luongnv89/asm skill 管理器（7e3c0b6）@Luong NGUYEN
+- 更新 README 统计数据以反映当前 GitHub 指标（5900+ stars, 690+ forks）（5001525）@Luong NGUYEN
+- 更新 README 统计数据以反映当前 GitHub 指标（3900+ stars, 460+ forks）（9cb92d6）@Luong NGUYEN
+
+### 重构
+
+- 使用本地 mmdc 渲染替代 Kroki HTTP 依赖（e76bbe4）@Luong NGUYEN
+- 将质量检查转移到 pre-commit，CI 作为第二道防线（6d1e0ae）@Luong NGUYEN
+- 缩小自动模式权限基线（2790fb2）@Luong NGUYEN
+- 用一次性权限设置脚本替换自动适配 hook（995a5d6）@Luong NGUYEN
+
+### 其他
+
+- 左移质量关卡 — 向 pre-commit 添加 mypy，修复 CI 失败（699fb39）@Luong NGUYEN
+- 添加越南语（Tiếng Việt）本地化（a70777e）@Thiên Toán
+
+**完整更新日志**：https://github.com/luongnv89/claude-howto/compare/v2.2.0...v2.3.0
+
+---
+
 ## v2.2.0 — 2026-03-26
 
 ### 文档
