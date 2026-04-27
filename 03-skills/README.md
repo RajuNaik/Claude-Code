@@ -762,7 +762,20 @@ When `disableSkillShellExecution` is `true`, any `` !`command` `` markers in a s
 | **Memory (CLAUDE.md)** | Always loaded | Persistent project context |
 | **MCP** | Real-time | External data/service access |
 | **Hooks** | Event-driven | Automated side effects |
+## Repository Skills
 
+This repository (`Claude-Code`) includes the following custom skills for learning and reference:
+
+| Skill | Description |
+|-------|-------------|
+| **blog-draft** | Draft blog posts from ideas with research collection, brainstorming, and outlining |
+| **brand-voice** | Maintain consistent tone/messaging across content with style guides and vocabulary |
+| **claude-md** | Create or update CLAUDE.md files following best practices for AI agent onboarding |
+| **code-review** | Comprehensive code reviews covering security, performance, quality, and maintainability |
+| **databricks-medallion-architecture** | Design and implement medallion architecture patterns on Databricks with governance strategies |
+| **doc-generator** | API documentation generation from OpenAPI specs with examples and endpoint docs |
+| **refactor** | Code refactoring workflows with templates for common patterns and improvements |
+| **sales-analyzer** | Analyze and optimize sales processes and customer engagement strategies |
 ## Bundled Skills
 
 Claude Code ships with several built-in skills that are always available without installation:
