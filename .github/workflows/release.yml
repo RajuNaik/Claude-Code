@@ -9,12 +9,20 @@ jobs:
   build:
     name: Build EPUB (${{ matrix.lang }})
     runs-on: ubuntu-latest
+    continue-on-error: ${{ matrix.continue-on-error == true }}
+    permissions:
+      contents: read
     strategy:
       # Don't cancel other languages if one fails — we still want to release
       # whichever languages built successfully.
       fail-fast: false
       matrix:
         lang: [en, vi, zh]
+        include:
+          # zh/ content is scaffolded but not yet populated; allow this leg
+          # to fail without blocking the release of en/vi EPUBs.
+          - lang: zh
+            continue-on-error: true
 
     steps:
       - uses: actions/checkout@v4
@@ -70,7 +78,17 @@ jobs:
           merge-multiple: true
 
       - name: List built artifacts
-        run: ls -lh dist/
+        run: ls -lh dist/ 2>/dev/null || echo "dist/ is empty or does not exist"
+
+      - name: Check artifacts exist
+        id: check_artifacts
+        run: |
+          count=$(ls dist/*.epub 2>/dev/null | wc -l)
+          echo "count=$count" >> $GITHUB_OUTPUT
+          if [ "$count" -eq 0 ]; then
+            echo "No EPUB artifacts were built — skipping release."
+            exit 1
+          fi
 
       - name: Create Release
         uses: softprops/action-gh-release@v2

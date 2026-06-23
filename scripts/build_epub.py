@@ -92,6 +92,29 @@ class CoverGenerationError(EPUBBuildError):
 # Configuration and State
 # =============================================================================
 
+# Language metadata: maps lang code → (subdir, output filename, title, subtitle).
+# "" subdir means use the repo root (English content lives at the top level).
+_LANG_METADATA: dict[str, tuple[str, str, str, str]] = {
+    "en": (
+        "",
+        "claude-howto-guide.epub",
+        "Claude Code How-To Guide",
+        "Master Claude Code in a Weekend",
+    ),
+    "vi": (
+        "vi",
+        "claude-howto-guide-vi.epub",
+        "Hướng Dẫn Claude Code",
+        "Làm chủ Claude Code trong một cuối tuần",
+    ),
+    "zh": (
+        "zh",
+        "claude-howto-guide-zh.epub",
+        "Claude Code 使用指南",
+        "一个周末掌握 Claude Code",
+    ),
+}
+
 
 @dataclass
 class EPUBConfig:
@@ -105,16 +128,9 @@ class EPUBConfig:
     # EPUB Metadata
     identifier: str = "claude-howto-guide"
     title: str = "Claude Code How-To Guide"
+    subtitle: str = "Master Claude Code in a Weekend"
     language: str = "en"
     author: str = "Claude Code Community"
-
-    # Language-specific metadata
-    vi_title: str = "Hướng Dẫn Claude Code"
-    vi_subtitle: str = "Làm chủ Claude Code trong một cuối tuần"
-    en_title: str = "Claude Code How-To Guide"
-    en_subtitle: str = "Master Claude Code in a Weekend"
-    zh_title: str = "Claude Code 使用指南"
-    zh_subtitle: str = "一个周末掌握 Claude Code"
 
     # Cover Settings
     cover_width: int = 600
@@ -908,7 +924,9 @@ def build_epub_async(
 
     # Add cover
     logger.info("Generating cover image...")
-    cover_data = create_cover_image(config, logger)
+    cover_data = create_cover_image(
+        config, logger, title=config.title, subtitle=config.subtitle
+    )
     book.set_cover("cover.png", cover_data)
 
     # Add CSS
@@ -1078,14 +1096,9 @@ def main() -> int:
     repo_root = args.root if args.root else Path(__file__).parent.parent
     repo_root = repo_root.resolve()
 
-    # Set language-specific paths and metadata.
-    # Each entry: (source root, default output filename, title)
-    lang_map: dict[str, tuple[Path, str, str]] = {
-        "en": (repo_root, "claude-howto-guide.epub", EPUBConfig.en_title),
-        "vi": (repo_root / "vi", "claude-howto-guide-vi.epub", EPUBConfig.vi_title),
-        "zh": (repo_root / "zh", "claude-howto-guide-zh.epub", EPUBConfig.zh_title),
-    }
-    root, default_output_name, title = lang_map[args.lang]
+    # Resolve language-specific paths and metadata from the module-level constant.
+    subdir, default_output_name, title, subtitle = _LANG_METADATA[args.lang]
+    root = repo_root / subdir if subdir else repo_root
     output = args.output or (repo_root / default_output_name)
     language = args.lang
 
@@ -1098,6 +1111,7 @@ def main() -> int:
         output_path=output,
         language=language,
         title=title,
+        subtitle=subtitle,
         mmdc_path=args.mmdc_path,
         puppeteer_config=args.puppeteer_config,
     )
